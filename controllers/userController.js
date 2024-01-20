@@ -49,7 +49,7 @@ const getProfile = async (req, res) => {
       .populate("followers");
     const follow = await User.findOne({ username })
       .select("-password")
-      .select("-updatedAt")
+      .select("-updatedAt") 
       .populate("following");
 
     const following = follow.following;
