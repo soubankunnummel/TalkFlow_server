@@ -180,21 +180,27 @@ const folloUnfollowUser = async (req, res) => {
 
 // check user name is exist
 
-    export const isUserName = async (req, res) => {
-      const {username} = req.body
-      try {
-        if(await User.findOne({username})){ 
-          return  res.status(400).json({message:"Username alredy taken"})
-         }
-         res.status(200).json({message:"User name avilable"})
-      } catch (error) {
-        console.log("Error in check user name")
+      export const isUserName = async (req, res) => {
+        const {username} = req.body
+
+        try {
+          if (!username) {
+            res.status(400).json({ message: "Username is not provided." });
+            return;
+          }
+
+          if(await User.findOne({username})){ 
+            return  res.status(400).json({message:"Username alredy taken"})
+          }
+          res.status(200).json({message:"User name avilable"})
+        } catch (error) {
+          console.log("Error in check user name")
+        }
+
       }
 
-    }
 
-
-// Update Usesr
+// Update Usesr 
 
 const updateUser = async (req, res) => {
   // console.log("creaded")

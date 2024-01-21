@@ -6,7 +6,7 @@ import User from "../models/userModel.js";
         try {
             const token = req.cookies.jwt
             // const token = req.headers["authorization"]
-            // console.log("token form protect route :",token)
+            
             if(!token)return res.status(401).json({message:"Unauthorized"})
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)  
