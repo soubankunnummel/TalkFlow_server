@@ -26,7 +26,10 @@ const PORT = process.env.PORT || 5000
 app.use(cookieParser())
 app.use(cors({
   origin:'http://localhost:3000',
-  credentials: true
+  credentials: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type, Authorization',
+  exposedHeaders: 'Content-Disposition',
 }))
 // app.use(cors({
 //     origin: 'https://talk-flow.vercel.app',
