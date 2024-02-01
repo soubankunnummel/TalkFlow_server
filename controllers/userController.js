@@ -185,7 +185,7 @@ const folloUnfollowUser = async (req, res) => {
 
         try {
           if (!username) {
-            res.status(400).json({ message: "Username is not provided." });
+            res.status(400).json({ message: "Username is not provided." }); 
             return;
           }
 
