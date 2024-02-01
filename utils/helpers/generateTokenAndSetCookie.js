@@ -9,10 +9,11 @@ const generateTokenAndSetCookie = (userId, res) => {
     res.cookie("jwt", token, {
         httpOnly: true,
         maxAge: 15 * 24 * 60 * 1000,
-        sameSite:"http://localhost:3000", 
-        domain: ".onrender.com",
-        secure:true
-    })
+        sameSite: 'Lax', 
+    });
+    ;
+    
+    
     return token
 }
 export default generateTokenAndSetCookie
