@@ -7,10 +7,10 @@ const generateTokenAndSetCookie = (userId, res) => {
     })
 
     res.cookie("jwt", token, {
-        httpOnly: true,
+        httpsOnly: true,
         maxAge: 15 * 24 * 60 * 1000,
         domain: ".onrender.com",
-        sameSite:"true", 
+        sameSite:true, 
     })
     return token
 }
