@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5000
 
 app.use(cookieParser())
 app.use(cors({
-    origin: 'https://talk-flow.vercel.app/', 
+    origin: 'https://talk-flow.vercel.app', 
     credentials: true,
   }));
 
