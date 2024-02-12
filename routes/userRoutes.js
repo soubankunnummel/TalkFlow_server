@@ -26,7 +26,7 @@ const router = express.Router();
 router.get("/profile/:username", getUserProfile);
 router.get("/user-profile/:username", getProfile);
 router.get("/users", allUsers);
-router.post("/signup", signupUser);
+router.post("/si gnup", signupUser);
 router.post("/login", loginUser);
 router.post("/signup-google", googleSignup)
 router.post("/login-google", googleLogin);

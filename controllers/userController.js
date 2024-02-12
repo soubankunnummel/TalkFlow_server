@@ -15,11 +15,13 @@ const getUserProfile = async (req, res) => {
   try {
     const user = await User.findOne({ username })
       .select("-password")
-      .select("-updatedAt")
+      .select("-updatedAt");
 
     if (!user) return res.status(404).json({ message: "user not fount" });
 
-    const posts = await Post.find({ postedBy: user.id }).sort({createdAt: -1})
+    const posts = await Post.find({ postedBy: user.id }).sort({
+      createdAt: -1,
+    });
 
     const userProfileWithPosts = {
       user: {
@@ -35,7 +37,6 @@ const getUserProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
     console.log("Error in get users profile: ", error.message);
   }
-
 };
 
 // get Profil with profile pic
@@ -49,7 +50,7 @@ const getProfile = async (req, res) => {
       .populate("followers");
     const follow = await User.findOne({ username })
       .select("-password")
-      .select("-updatedAt") 
+      .select("-updatedAt")
       .populate("following");
 
     const following = follow.following;
@@ -131,7 +132,9 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
+    console.log("logoluted");
     res.cookie("jwt", "", { maxAge: 1 });
+    console.log(res.cookie("jwt", "", { maxAge: 1 }));
     res.status(200).json({ message: "User logged out succesfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -148,7 +151,6 @@ const folloUnfollowUser = async (req, res) => {
     const userModify = await User.findById(id);
     const currentUser = await User.findById(req.user._id).populate("following");
 
-
     if (id === req.user._id.toString())
       return res
         .status(400)
@@ -157,8 +159,10 @@ const folloUnfollowUser = async (req, res) => {
     if (!userModify || !currentUser)
       return res.status(400).json({ message: "User not found" });
 
-    const isFollowing = currentUser.following.map(user => user._id.toString()).includes(id);
-    console.log("isfollowing: ",currentUser.following)
+    const isFollowing = currentUser.following
+      .map((user) => user._id.toString())
+      .includes(id);
+    console.log("isfollowing: ", currentUser.following);
     if (isFollowing) {
       // unfollow user
 
@@ -179,45 +183,42 @@ const folloUnfollowUser = async (req, res) => {
 
 // check user name is exist
 
-      export const isUserName = async (req, res) => {
-        const {username} = req.body
+export const isUserName = async (req, res) => {
+  const { username } = req.body;
 
-        try {
-          if (!username) {
-            res.status(400).json({ message: "Username is not provided." }); 
-            return;
-          }
+  try {
+    if (!username) {
+      res.status(400).json({ message: "Username is not provided." });
+      return;
+    }
 
-          if(await User.findOne({username})){ 
-            return  res.status(400).json({message:"Username alredy taken"})
-          }
-          res.status(200).json({message:"User name avilable"})
-        } catch (error) {
-          console.log("Error in check user name")
-        }
+    if (await User.findOne({ username })) {
+      return res.status(400).json({ message: "Username alredy taken" });
+    }
+    res.status(200).json({ message: "User name avilable" });
+  } catch (error) {
+    console.log("Error in check user name");
+  }
+};
 
-      }
-
-
-// Update Usesr 
+// Update Usesr
 
 const updateUser = async (req, res) => {
   // console.log("creaded")
-  const { name, email, username, password, bio } = req.body; 
-  console.log("profile updae ",req.body)
+  const { name, email, username, password, bio } = req.body;
+  console.log("profile updae ", req.body);
   let { profilePic } = req.body;
 
   console.log("Profiel pic form boy", profilePic);
   const userId = req.user._id;
- console.log( req.user._id)
+  console.log(req.user._id);
   try {
     let user = await User.findById(userId);
     if (!user) return res.status(400).json({ error: "User not found" });
 
-    if(await User.findOne({username})){ 
-      return  res.status(400).json({message:"Username alredy taken"})
-     }
- 
+    if (await User.findOne({ username })) {
+      return res.status(400).json({ message: "Username alredy taken" });
+    }
 
     if (req.params.id !== userId.toString())
       return res
@@ -271,9 +272,9 @@ const allUsers = async (req, res) => {
 // google signup
 
 export const googleSignup = async (req, res) => {
-  try { 
+  try {
     const { username, email, profilePic } = req.body;
-    console.log("resbody:",username, email, profilePic)
+    console.log("resbody:", username, email, profilePic);
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
 
     if (existingUser) {
@@ -284,7 +285,7 @@ export const googleSignup = async (req, res) => {
       username,
       email,
       profilePic: profilePic,
-    }); 
+    });
 
     await newUser.save();
     generateTokenAndSetCookie(newUser._id, res);
@@ -307,18 +308,18 @@ const googleLogin = async (req, res) => {
   // console.log(req)
 
   try {
-    const {  email } = req.body;
-    console.log(email,"formbody")
-    let user = await User.findOne({email });
+    const { email } = req.body;
+    console.log(email, "formbody");
+    let user = await User.findOne({ email });
 
-    if(!user) return res.status(404).json({message:"Invalid Email"})
-    
+    if (!user) return res.status(404).json({ message: "Invalid Email" });
+
     generateTokenAndSetCookie(user._id, res);
     res.status(200).json({
-      message:"login success",
-      _id: user._id,  
+      message: "login success",
+      _id: user._id,
       email: user.email,
-      username: user.username, 
+      username: user.username,
       profilePic: user.profilePic,
       bio: user.bio,
     });
@@ -356,13 +357,13 @@ const fogotPassword = async (req, res) => {
       subject: "Password Reset OTP",
       text: `Your OTP for password reset is: ${otp}`,
     };
-    
+
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error, "info:", info);
         return res.status(500).json({ error: "Failed to send OTP email" });
       }
-      console.log("working")
+      console.log("working");
 
       console.log("Email sent: " + info.response);
       res.status(200).json({ message: "OTP sent to your email" });
@@ -425,7 +426,7 @@ const resetPassword = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword; 
+    user.password = hashedPassword;
     user.resetPasswordOTP = null;
     await user.save();
 
